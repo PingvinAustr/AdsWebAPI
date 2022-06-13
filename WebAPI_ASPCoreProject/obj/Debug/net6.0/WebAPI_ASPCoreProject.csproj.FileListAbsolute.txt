@@ -19,4 +19,5 @@ C:\Users\Yaroslav\source\repos\WebAPI_ASPCoreProject\WebAPI_ASPCoreProject\obj\D
 C:\Users\Yaroslav\source\repos\WebAPI_ASPCoreProject\WebAPI_ASPCoreProject\obj\Debug\net6.0\WebAPI_ASPCoreProject.pdb
 C:\Users\Yaroslav\source\repos\WebAPI_ASPCoreProject\WebAPI_ASPCoreProject\obj\Debug\net6.0\WebAPI_ASPCoreProject.genruntimeconfig.cache
 C:\Users\Yaroslav\source\repos\WebAPI_ASPCoreProject\WebAPI_ASPCoreProject\bin\Debug\net6.0\WebAPI_ASPCoreProject.staticwebassets.runtime.json
+C:\Users\Yaroslav\source\repos\WebAPI_ASPCoreProject\WebAPI_ASPCoreProject\bin\Debug\net6.0\InputCountries.json
 C:\Users\Yaroslav\source\repos\WebAPI_ASPCoreProject\WebAPI_ASPCoreProject\obj\Debug\net6.0\WebAPI_ASPCoreProject.csproj.AssemblyReference.cache
