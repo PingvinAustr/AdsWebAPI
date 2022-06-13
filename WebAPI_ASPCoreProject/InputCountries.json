@@ -1,0 +1,23 @@
+[
+  {
+    "SingleCountryName": "USA",
+    "AvailableVerticals": [ "Telecommunications", "Automotive", "Food", "IT", "E-commerce", "Transport" ],
+    "AvailableRegions": [ "Germany", "Italy", "UK", "USA", "Brazil", "Canada", "France" ],
+    "SingleCountryClicks": 1000,
+    "SingleCountryLogo": "../img/icon_usa.png"
+  },
+  {
+    "SingleCountryName": "Germany",
+    "AvailableVerticals": [ "Automotive", "IT", "E-commerce", "Transport" ],
+    "AvailableRegions": [ "Germany", "Italy", "UK", "USA", "France" ],
+    "SingleCountryClicks": 700,
+    "SingleCountryLogo": "../img/icon_germany.png"
+  },
+  {
+    "SingleCountryName": "China",
+    "AvailableVerticals": [ "Food", "IT" ],
+    "AvailableRegions": [ "Italy", "China", "Brazil", "France" ],
+    "SingleCountryClicks": 500,
+    "SingleCountryLogo": "../img/icon_china.png"
+  }
+]
