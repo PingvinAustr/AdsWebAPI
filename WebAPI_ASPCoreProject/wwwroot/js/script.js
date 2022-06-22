@@ -3,6 +3,7 @@ var selectedChildID_DD2 = 0;
 let inputs_validation = ['False', 'False','False'];
 var clicks_span_html = "<span id='clicks_span'> clicks</span>";
 var g_vertical, g_region;
+
 function CallClicksAPI(t_vertical, t_region, t_budget) {
 
     var requestURL = 'https://localhost:7291/ClicksAPI/?vertical=' + t_vertical + '&region=' + t_region;
@@ -13,6 +14,11 @@ function CallClicksAPI(t_vertical, t_region, t_budget) {
     request.responseType = 'json';
     request.send();
 
+    //alert(document.getElementById('clicks_output').innerHTML);
+    let current_number_clicks = String(document.getElementById('clicks_output').innerHTML);
+    current_number_clicks = parseInt(current_number_clicks.substring(0, current_number_clicks.indexOf('<')));
+    //alert('{' + current_number_clicks + '}');
+
     request.onload = function () {
         var superHeroes = request.response;
        
@@ -20,20 +26,27 @@ function CallClicksAPI(t_vertical, t_region, t_budget) {
         document.getElementById('clicks_output').innerHTML = request.response['sumClicks'] + clicks_span_html;
         LoadImagesToGrid(request.response, request.response['imG_LinkArr'].length);
 
+        if (request.response['imG_LinkArr'].length <= 6) document.getElementById('more_images').classList.add('more_img_disabled');
+
+        animateValue('clicks_output', current_number_clicks, request.response['sumClicks'], 1000);
        
     }
-    
+   
     
     //document.getElementById('clicks_output').innerHTML = request.response['sumClicks'];
 }
 
 
+
 function LoadImagesToGrid(resp,arr_length) {
 
     let i = 1;
+    
     resp['imG_LinkArr'].forEach(element => {
-        let text_id = "grid_" + i;
-        document.getElementById(text_id).innerHTML = "<img class='img_grid_ball' src='" + element + "'/>";
+        if (i <= 6) {
+            let text_id = "grid_" + i;
+            document.getElementById(text_id).innerHTML = "<img class='img_grid_ball' src='" + element + "'/>";
+        }
         i++;
     });
 
@@ -57,18 +70,34 @@ function RevealButtonClick() {
         item.remove();
     });
 
+   
     let toggleHTML = "<div class='toggle_body'><div class='toggle_line'><div class='toggle_ball' id='toggle_ball' onmousedown='dragElement()'></div></div></div>";
-    let gridHTML = "<div class='grid_countries'> <div id='grid_1'>1</div><div id='grid_2'>2</div><div id='grid_3'>3</div><div id='grid_4'>4</div><div id='grid_5'>5</div><div id='grid_6'>6</div> </div>";
-    document.getElementById('form_body').innerHTML = "<h2 class='form_part'>This is what you can get with MegatronQ:</h2> <h2 class='form_part' style='text-align:center; font-size:48px;' id='clicks_output'>1" + clicks_span_html + "</h2><div>*Your montly budget:<div id='change_budget' style='text-align:center; margin-top:10px; font-weight:bold;'>5000$</div></div>" + toggleHTML+"<div>Your content will be featured on the <span>World’s Leading Publishers</span></div>" + gridHTML;
-    
-    
-    // Make the DIV element draggable:
-    dragElement(document.getElementById("toggle_ball"));
+    let gridHTML = "<div class='grid_countries'> <div id='grid_1'></div><div id='grid_2'></div><div id='grid_3'></div><div id='grid_4'></div><div id='grid_5'></div><div id='grid_6'></div> </div>";
+     //let test = "CallClicksAPI('" + vertical + "','" + region + "','" + document.getElementById('mobile_input').innerHTML + "')";
+    let inputHTML = "<input class='form_input' id='mobile_input' autocomplete='off' type='text'/>";
+    document.getElementById('form_body').innerHTML = "<h2 class='form_part'>This is what you can get with MegatronQ:</h2> <h2 class='form_part' style='text-align:center; font-size:48px;' id='clicks_output'>1" + clicks_span_html + "</h2><div>*Your montly budget:<div id='change_budget' style='text-align:center; margin-top:10px; font-weight:bold;'>5000$</div></div>" + toggleHTML + inputHTML+"<div class='JSadded'>Your content will be featured on the <span>World’s Leading Publishers</span></div>" + gridHTML + "<div id='more_images'>and more...</div>";
+    document.getElementById('form_body').classList.add('JS');
+
+   // document.getElementById('mobile_input').addEventListener('input', CallClicksAPI(vertical, region, 1000));
+    document.getElementById('mobile_input').oninput = function () {
+        //alert(document.getElementById('mobile_input').value);
+        if (document.getElementById('mobile_input').value > 100000) {
+            alert('Max budget is 100000$!');
+            document.getElementById('mobile_input').value = 100000;
+        }
+        else
+        CallClicksAPI(vertical, region, document.getElementById('mobile_input').value);
+    }
+    //alert(document.getElementById('mobile_input').oninput);
+
 
     g_vertical = vertical;
     g_region = region;
     CallClicksAPI(vertical, region);
 
+    
+    // Make the DIV element draggable:
+    dragElement(document.getElementById("toggle_ball"));
 }
 
 
@@ -198,7 +227,7 @@ window.onclick = function (event) {
 
 
 function dragElement(elmnt) {
-    //alert("1");
+   
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     if (document.getElementById("toggle_ball")) {
         // if present, the header is where you move the DIV from:
@@ -279,3 +308,42 @@ function dragElement(elmnt) {
         document.onmousemove = null;
     }
 }
+
+
+function animateValue(id, start, end, duration) {
+    // assumes integer values for start and end
+
+    var obj = document.getElementById(id);
+    var range = end - start;
+    // no timer shorter than 50ms (not really visible any way)
+    var minTimer = 50;
+    // calc step time to show all interediate values
+    var stepTime = Math.abs(Math.floor(duration / range));
+
+    // never go below minTimer
+    stepTime = Math.max(stepTime, minTimer);
+
+    // get current time and calculate desired end time
+    var startTime = new Date().getTime();
+    var endTime = startTime + duration;
+    var timer;
+
+    function run() {
+
+  
+
+        var now = new Date().getTime();
+        var remaining = Math.max((endTime - now) / duration, 0);
+        var value = Math.round(end - (remaining * range));
+        obj.innerHTML = value + clicks_span_html;
+        if (value == end) {
+            clearInterval(timer);
+        }
+    }
+    
+    timer = setInterval(run, stepTime);
+    run();
+   
+}
+
+
