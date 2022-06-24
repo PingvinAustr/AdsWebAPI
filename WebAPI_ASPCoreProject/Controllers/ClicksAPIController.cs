@@ -7,15 +7,11 @@ namespace WebAPI_ASPCoreProject.Controllers
     [Route("[controller]")]
     public class ClicksAPIController : ControllerBase
     {
-
+        //Initializing lists of All countries and suitable countries. Firstly we get all countries and then depending whether their regions/verticals suit us - add them to SuitableCountriesList
         List<SingleCountry> SuitableCountriesList = new List<SingleCountry>();
         List<SingleCountry> AllCountries = new List<SingleCountry>();
 
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-         };
-
+        //Default logger
         private readonly ILogger<ClicksAPIController> _logger;
 
         public ClicksAPIController(ILogger<ClicksAPIController> logger)
@@ -23,40 +19,41 @@ namespace WebAPI_ASPCoreProject.Controllers
             _logger = logger;
         }
 
+        //Receive start data from InputCountries.json
         public void GetCountriesFromJSON()
         {
-            // чтение данных
+            // Reading data from JSON file and writing it to the AllCountries list
             using (FileStream fs = new FileStream("InputCountries.json", FileMode.OpenOrCreate))
             {
                 AllCountries = JsonSerializer.Deserialize<List<SingleCountry>>(fs);              
             }
         }
 
-        
-        public List<SingleCountry> test()
-        {
-            return AllCountries;
-        }
 
-
-        [HttpGet(Name = "GetWeatherForecast")]
+        [HttpGet(Name = "ClicksAPI")]
         [HttpGet("{number}")]
-        //public List<SingleCountry> Get(string? vertical, string? region, int? budget)
         public CountryClicks Get(string? vertical, string? region, int? budget)
         {
-
+            //Default budget (if not set by user)
             if (budget == null) budget = 5000;
 
-            Console.WriteLine("Vertical - "+vertical+", region - "+region+", budget - "+budget.ToString());
+            //Logging debug data
+            Console.WriteLine("Vertical - " + vertical + ", region - " + region + ", budget - " + budget.ToString());
+
+            //Get all countries from JSON to AllCountires list
             GetCountriesFromJSON();
+
+            //Initializing variables for checks and DataToReturn list that will contain data that will be returned.
             bool vertical_suits=false, region_suits = false;
             CountryClicks DataToReturn = new CountryClicks();
             DataToReturn.SuitableCountriesArr = new List<string> { };
             DataToReturn.IMG_LinkArr = new List<string> {  };
 
+
+            //Go through all countries and check whether they suit vertical and region
             foreach (SingleCountry country in AllCountries)
             {
-              
+                //'Sanitize'
                 vertical_suits = false;
                 region_suits = false;
 
@@ -76,9 +73,10 @@ namespace WebAPI_ASPCoreProject.Controllers
                     }
                 }
 
+                //If both region and vertical suit requirements:
                 if (region_suits && vertical_suits)
                 {
-                    //Console.WriteLine("Country " + country.SingleCountryName + " OK and gives " + country.SingleCountryClicks + " clicks");
+                    //Add this country to corresponding list
                     SuitableCountriesList.Add(country);
                     DataToReturn.SuitableCountriesArr.Add(country.SingleCountryName);
                     DataToReturn.IMG_LinkArr.Add(country.SingleCountryLogo);
@@ -88,15 +86,10 @@ namespace WebAPI_ASPCoreProject.Controllers
                 
                
             }
+
+            //Add 'budget' bonus to total number of clicks
             DataToReturn.SumClicks = Convert.ToInt32(DataToReturn.SumClicks + (budget/10));
-            Console.WriteLine(DataToReturn.SumClicks.ToString());
-
-            //1. Передал в качестве параметра выбранную вертикаль, регион, бюджет
-            //2. Выбрал какие страны подходят под регион и вертикаль (Из JSON парсятся данные по каждой стране и подходящей ей вертикали и региону) в список объектов СountryInfo
-            //3. Просуммировал клили по странам которые подошли под пункт 2, подходящие страны выделил в массив и передал в CountryClicks
-            //4. Умножил  CountryClicks.Clicks (сумма) на коэффициент бюджета
-            //5. Вернул на экран браузера 1 экземпляр класса CountryClicks в котором будет сумма кликов, а также в нем будет массив подходящих стран CountryInfo
-
+           
             return DataToReturn;           
         }
     }
