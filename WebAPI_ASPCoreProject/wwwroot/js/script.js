@@ -104,7 +104,7 @@ function RevealButtonClick() {
             let str = String(document.getElementById('mobile_input').value);
             let allnums = "0123456789";
 
-            if ((allnums.indexOf(str[str.length - 1])) == -1 && document.getElementById('mobile_input').value != "") { document.getElementById('mobile_input').value = 5000; alert("Please enter only numbers!");}
+            if ((allnums.indexOf(str[str.length - 1])) == -1 && document.getElementById('mobile_input').value != "") { document.getElementById('mobile_input').value = str.substring(0, str.length-1); alert("Please enter only numbers!"); }
             else
             CallClicksAPI(vertical, region, document.getElementById('mobile_input').value);
         }
